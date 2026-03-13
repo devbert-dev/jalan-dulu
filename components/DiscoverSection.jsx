@@ -1,15 +1,29 @@
 'use client';
-import { useState } from 'react';
-import { C, CATEGORIES, EVENTS } from '../lib/constants';
+import { useState, useEffect } from 'react';
+import { C, CATEGORIES } from '../lib/constants';
 import EventCard from './EventCard';
 import DetailPanel from './DetailPanel';
 
+const API_URL = 'https://jalan-dulu-api-production.up.railway.app';
+
 export default function DiscoverSection({ isHost }) {
-  const [selected, setSelected] = useState(EVENTS[0]);
+  const [events,   setEvents]   = useState([]);
+  const [loading,  setLoading]  = useState(true);
+  const [selected, setSelected] = useState(null);
   const [search,   setSearch]   = useState('');
   const [cat,      setCat]      = useState('All');
 
-  const filtered = EVENTS.filter(e =>
+  useEffect(() => {
+    fetch(`${API_URL}/events`)
+      .then(r => r.json())
+      .then(data => {
+        setEvents(data);
+        setSelected(data[0] ?? null);
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
+  const filtered = events.filter(e =>
     (cat === 'All' || e.category === cat) &&
     (!search || e.title.toLowerCase().includes(search.toLowerCase()) || e.location.toLowerCase().includes(search.toLowerCase()))
   );
@@ -54,21 +68,28 @@ export default function DiscoverSection({ isHost }) {
 
         {/* Cards */}
         <div style={{ overflowY: 'auto', padding: '16px 24px', display: 'flex', flexDirection: 'column', gap: 12 }}>
-          <div style={{ fontFamily: 'Outfit', fontSize: 12, color: C.textMuted, marginBottom: 4 }}>
-            {filtered.length} event{filtered.length !== 1 ? 's' : ''} found
-          </div>
-
-          {filtered.length ? filtered.map(e => (
-            <EventCard
-              key={e.id}
-              event={e}
-              selected={selected}
-              onClick={() => setSelected(e)}
-            />
-          )) : (
+          {loading ? (
             <div style={{ padding: 40, textAlign: 'center', color: C.textMuted, fontFamily: 'Outfit' }}>
-              No events match your search 🌿<br />Try a different filter.
+              Loading events…
             </div>
+          ) : (
+            <>
+              <div style={{ fontFamily: 'Outfit', fontSize: 12, color: C.textMuted, marginBottom: 4 }}>
+                {filtered.length} event{filtered.length !== 1 ? 's' : ''} found
+              </div>
+              {filtered.length ? filtered.map(e => (
+                <EventCard
+                  key={e.id}
+                  event={e}
+                  selected={selected}
+                  onClick={() => setSelected(e)}
+                />
+              )) : (
+                <div style={{ padding: 40, textAlign: 'center', color: C.textMuted, fontFamily: 'Outfit' }}>
+                  No events match your search 🌿<br />Try a different filter.
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>

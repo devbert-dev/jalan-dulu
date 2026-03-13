@@ -1,8 +1,20 @@
 'use client';
-import { C, CATEGORIES, EVENTS } from '../lib/constants';
+import { useState, useEffect } from 'react';
+import { C, CATEGORIES } from '../lib/constants';
 import { PublicSlotBar } from './UI';
 
+const API_URL = 'https://jalan-dulu-api-production.up.railway.app';
+
 export default function HomeSection({ setPage }) {
+  const [events,  setEvents]  = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch(`${API_URL}/events`)
+      .then(r => r.json())
+      .then(data => setEvents(data))
+      .finally(() => setLoading(false));
+  }, []);
   return (
     <div style={{ padding: '32px 36px', maxWidth: 960, margin: '0 auto' }}>
 
@@ -99,8 +111,13 @@ export default function HomeSection({ setPage }) {
       <div style={{ fontFamily: 'Playfair Display, serif', fontWeight: 800, fontSize: 20, color: C.text, marginBottom: 16 }}>
         Featured This Weekend
       </div>
+      {loading ? (
+        <div style={{ padding: 40, textAlign: 'center', color: C.textMuted, fontFamily: 'Outfit' }}>
+          Loading events…
+        </div>
+      ) : (
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16 }}>
-        {EVENTS.slice(0, 3).map(e => (
+        {events.slice(0, 3).map(e => (
           <div
             key={e.id}
             onClick={() => setPage('discover')}
@@ -124,6 +141,7 @@ export default function HomeSection({ setPage }) {
           </div>
         ))}
       </div>
+      )}
     </div>
   );
 }
