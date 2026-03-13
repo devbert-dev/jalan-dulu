@@ -1,0 +1,33 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Outfit:wght@400;500;600;700&display=swap');
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#__next {
+  height: 100%;
+}
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background: #F3F8F2;
+  color: #0D2B0B;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar        { width: 5px; height: 5px; }
+::-webkit-scrollbar-track  { background: #F3F8F2; }
+::-webkit-scrollbar-thumb  { background: #A8DCA3; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #229814; }
+
+/* Utility */
+.font-display {
+  font-family: 'Playfair Display', serif;
+}
