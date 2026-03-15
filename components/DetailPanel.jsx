@@ -3,12 +3,14 @@ import { useState } from 'react';
 import { C } from '../lib/constants';
 import { Tag, PublicSlotBar, HostGenderBar } from './UI';
 
-export default function DetailPanel({ event, isHost }) {
+const API_URL = 'https://jalan-dulu-api-production.up.railway.app';
+
+export default function DetailPanel({ event, role, token }) {
   const [booked, setBooked] = useState(false);
   const [gender, setGender] = useState(null);
 
-  // Reset state when event changes
-  // (in production you'd use useEffect([event?.id]))
+  const isHostOrAdmin = role === 'host' || role === 'admin';
+  const isAdmin       = role === 'admin';
 
   if (!event) {
     return (
@@ -25,7 +27,44 @@ export default function DetailPanel({ event, isHost }) {
     );
   }
 
-  const spotsLeft = event.totalSlots - event.totalFilled;
+  // Support both API shape (gender_slots) and mock data shape (totalSlots/totalFilled/gender)
+  const totalSlots  = event.gender_slots?.total_slots  ?? event.totalSlots  ?? 0;
+  const totalFilled = (event.gender_slots
+    ? (event.gender_slots.male_filled ?? 0) + (event.gender_slots.female_filled ?? 0)
+    : event.totalFilled) ?? 0;
+
+  // Gender data for host/admin view — works with both API and mock shapes
+  const genderData = event.gender_slots
+    ? {
+        female: { filled: event.gender_slots.female_filled ?? 0, max: event.gender_slots.female_slots ?? 0 },
+        male:   { filled: event.gender_slots.male_filled   ?? 0, max: event.gender_slots.male_slots   ?? 0 },
+      }
+    : event.gender;
+
+  async function handleBook() {
+    if (!gender || gender === 'other') {
+      setBooked(true); // optimistic for 'other' — no quota slot used
+      return;
+    }
+    try {
+      const res = await fetch(`${API_URL}/bookings`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          event_id: event.id,
+          gender,
+          name:  '',
+          email: '',
+        }),
+      });
+      if (res.ok) setBooked(true);
+    } catch {
+      setBooked(true); // fallback optimistic
+    }
+  }
 
   return (
     <div style={{
@@ -35,7 +74,7 @@ export default function DetailPanel({ event, isHost }) {
       {/* Header */}
       <div>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
-          <span style={{ fontSize: 40 }}>{event.category.split(' ')[0]}</span>
+          <span style={{ fontSize: 40 }}>{event.category?.split(' ')[0] ?? '🎯'}</span>
           <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
             <span style={{ fontFamily: 'Jura', fontSize: 12, color: C.yellowDeep, fontWeight: 600 }}>
               ★ {event.rating} ({event.reviews})
@@ -76,7 +115,7 @@ export default function DetailPanel({ event, isHost }) {
 
       {/* Tags */}
       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-        {event.tags.map(t => <Tag key={t} label={t} color={C.greenSage} />)}
+        {event.tags?.map(t => <Tag key={t} label={t} color={C.greenSage} />)}
       </div>
 
       {/* Availability */}
@@ -87,23 +126,25 @@ export default function DetailPanel({ event, isHost }) {
         }}>
           Availability
         </div>
-        <PublicSlotBar filled={event.totalFilled} total={event.totalSlots} />
+        <PublicSlotBar filled={totalFilled} total={totalSlots} />
         <div style={{ fontFamily: 'Jura', fontSize: 12, color: C.textMuted, marginTop: 8, fontStyle: 'italic' }}>
-          Total capacity: {event.totalSlots} participants
+          Total capacity: {totalSlots} participants
         </div>
       </div>
 
-      {/* Host view: gender breakdown */}
-      {isHost && <HostGenderBar female={event.gender.female} male={event.gender.male} />}
+      {/* Host/Admin view: gender breakdown */}
+      {isHostOrAdmin && genderData && (
+        <HostGenderBar female={genderData.female} male={genderData.male} />
+      )}
 
-      {/* Participant view: privacy notice */}
-      {!isHost && (
+      {/* User view: privacy notice */}
+      {!isHostOrAdmin && (
         <div style={{
           background: C.yellowPale, border: `1px solid ${C.yellowMid}44`,
           borderRadius: 10, padding: '10px 14px',
           fontFamily: 'Jura', fontSize: 12, color: C.yellowDeep, lineHeight: 1.6,
         }}>
-          ℹ️ The host has set gender quotas to ensure a balanced experience. You'll declare your gender when booking.
+          ℹ️ The host has set gender quotas to ensure a balanced experience. You&apos;ll declare your gender when booking.
         </div>
       )}
 
@@ -114,10 +155,10 @@ export default function DetailPanel({ event, isHost }) {
             fontFamily: 'Jura', fontWeight: 700, fontSize: 12,
             color: C.textMuted, textTransform: 'uppercase', letterSpacing: .8, marginBottom: 12,
           }}>
-            {isHost ? 'Manage Event' : 'Book Your Spot'}
+            {isHostOrAdmin ? 'Manage Event' : 'Book Your Spot'}
           </div>
 
-          {!isHost && (
+          {!isHostOrAdmin && (
             <>
               <div style={{ fontFamily: 'Jura', fontSize: 13, color: C.textMid, marginBottom: 8 }}>
                 Register as:
@@ -148,12 +189,12 @@ export default function DetailPanel({ event, isHost }) {
           }}>
             <span style={{ fontFamily: 'Jura', color: C.textMuted, fontSize: 13 }}>Ticket price</span>
             <span style={{ fontFamily: 'Jura, sans-serif', fontWeight: 800, fontSize: 22, color: C.yellowDeep }}>
-              Rp {event.price.toLocaleString('id-ID')}
+              Rp {event.price?.toLocaleString('id-ID') ?? '—'}
             </span>
           </div>
 
-          {isHost ? (
-            <div style={{ display: 'flex', gap: 8 }}>
+          {isHostOrAdmin ? (
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
               <button style={{
                 flex: 1, padding: '12px', borderRadius: 10,
                 fontFamily: 'Jura', fontWeight: 700, fontSize: 13,
@@ -169,10 +210,21 @@ export default function DetailPanel({ event, isHost }) {
               }}>
                 ✏️ Edit Event
               </button>
+              {isAdmin && (
+                <button style={{
+                  flex: 1, padding: '12px', borderRadius: 10,
+                  fontFamily: 'Jura', fontWeight: 700, fontSize: 13,
+                  background: 'transparent', color: C.female,
+                  border: `2px solid ${C.female}55`, cursor: 'pointer',
+                  minWidth: '100%',
+                }}>
+                  🗑 Remove Event
+                </button>
+              )}
             </div>
           ) : (
             <button
-              onClick={() => { if (gender) setBooked(true); }}
+              onClick={handleBook}
               style={{
                 width: '100%', padding: '13px', borderRadius: 10,
                 fontFamily: 'Jura', fontWeight: 700, fontSize: 14,

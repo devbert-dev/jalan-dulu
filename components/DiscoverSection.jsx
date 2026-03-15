@@ -6,13 +6,15 @@ import DetailPanel from './DetailPanel';
 
 const API_URL = 'https://jalan-dulu-api-production.up.railway.app';
 
-export default function DiscoverSection({ isHost }) {
+export default function DiscoverSection({ role, token }) {
   const [events,   setEvents]   = useState([]);
   const [loading,  setLoading]  = useState(true);
   const [selected, setSelected] = useState(null);
+  const [detail,   setDetail]   = useState(null);
   const [search,   setSearch]   = useState('');
   const [cat,      setCat]      = useState('All');
 
+  // Fetch event list (public — no auth needed)
   useEffect(() => {
     fetch(`${API_URL}/events`)
       .then(r => r.json())
@@ -22,6 +24,17 @@ export default function DiscoverSection({ isHost }) {
       })
       .finally(() => setLoading(false));
   }, []);
+
+  // Fetch authenticated event detail when selection changes
+  // Hosts/admins receive full gender breakdown; users get total_slots only
+  useEffect(() => {
+    if (!selected) return;
+    const headers = token ? { Authorization: `Bearer ${token}` } : {};
+    fetch(`${API_URL}/events/${selected.id}`, { headers })
+      .then(r => r.json())
+      .then(setDetail)
+      .catch(() => setDetail(selected));
+  }, [selected?.id, token]);
 
   const filtered = events.filter(e =>
     (cat === 'All' || e.category === cat) &&
@@ -96,7 +109,7 @@ export default function DiscoverSection({ isHost }) {
 
       {/* ── Right: detail ── */}
       <div style={{ overflowY: 'auto', background: C.bgCard }}>
-        <DetailPanel event={selected} isHost={isHost} />
+        <DetailPanel event={detail || selected} role={role} token={token} />
       </div>
     </div>
   );

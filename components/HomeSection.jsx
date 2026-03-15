@@ -5,7 +5,7 @@ import { PublicSlotBar } from './UI';
 
 const API_URL = 'https://jalan-dulu-api-production.up.railway.app';
 
-export default function HomeSection({ setPage }) {
+export default function HomeSection({ setPage, token, role }) {
   const [events,  setEvents]  = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -47,9 +47,14 @@ export default function HomeSection({ setPage }) {
             >
               Explore Events
             </button>
-            <button style={{ padding: '11px 24px', borderRadius: 10, background: 'transparent', color: '#fff', fontFamily: 'Jura', fontWeight: 700, fontSize: 13, border: '2px solid rgba(255,255,255,.3)', cursor: 'pointer' }}>
-              + Host an Event
-            </button>
+            {(role === 'host' || role === 'admin') && (
+              <button
+                onClick={() => setPage('myevents')}
+                style={{ padding: '11px 24px', borderRadius: 10, background: 'transparent', color: '#fff', fontFamily: 'Jura', fontWeight: 700, fontSize: 13, border: '2px solid rgba(255,255,255,.3)', cursor: 'pointer' }}
+              >
+                + Host an Event
+              </button>
+            )}
           </div>
         </div>
 

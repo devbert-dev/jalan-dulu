@@ -1,7 +1,17 @@
 'use client';
 import { C, NAV } from '../lib/constants';
 
-export default function Sidebar({ page, setPage, isHost, setIsHost }) {
+const ROLE_BADGE = {
+  admin: '⚙ Admin',
+  host:  '🎯 Host',
+  user:  '👤 Participant',
+};
+
+export default function Sidebar({ page, setPage, role, user }) {
+  const visibleNav = NAV.filter(n => n.roles.includes(role));
+  const displayName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || '';
+  const initial = (displayName[0] || '?').toUpperCase();
+
   return (
     <div style={{
       background: C.greenDark,
@@ -21,9 +31,9 @@ export default function Sidebar({ page, setPage, isHost, setIsHost }) {
         </div>
       </div>
 
-      {/* Nav links */}
+      {/* Nav links — filtered by role */}
       <nav style={{ flex: 1, padding: '16px 12px', display: 'flex', flexDirection: 'column', gap: 3 }}>
-        {NAV.map(n => (
+        {visibleNav.map(n => (
           <button
             key={n.id}
             onClick={() => setPage(n.id)}
@@ -61,36 +71,7 @@ export default function Sidebar({ page, setPage, isHost, setIsHost }) {
         ))}
       </nav>
 
-      {/* Host / Participant toggle (demo purposes) */}
-      <div style={{ padding: '16px 14px', borderTop: '1px solid rgba(255,255,255,.08)' }}>
-        <div style={{ fontFamily: 'Jura', fontSize: 11, color: C.greenLight, marginBottom: 8, textTransform: 'uppercase', letterSpacing: 1 }}>
-          View Mode
-        </div>
-        <div style={{ display: 'flex', background: 'rgba(0,0,0,.25)', borderRadius: 8, padding: 3, gap: 3 }}>
-          {[['Participant', false], ['Host', true]].map(([label, val]) => (
-            <button
-              key={label}
-              onClick={() => setIsHost(val)}
-              style={{
-                flex: 1, padding: '7px 6px', borderRadius: 6,
-                fontFamily: 'Jura', fontWeight: 600, fontSize: 12, cursor: 'pointer', border: 'none',
-                background: isHost === val ? C.yellowPale : 'transparent',
-                color:      isHost === val ? C.greenDark : C.greenLight,
-                transition: 'all .18s',
-              }}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-        <div style={{ fontFamily: 'Jura', fontSize: 10, color: 'rgba(255,255,255,.35)', marginTop: 8, lineHeight: 1.5 }}>
-          {isHost
-            ? '🔒 Gender quota details visible'
-            : '👤 Gender split hidden from you'}
-        </div>
-      </div>
-
-      {/* User stub */}
+      {/* User card with real name + role badge */}
       <div style={{
         padding: '14px 14px 20px',
         borderTop: '1px solid rgba(255,255,255,.08)',
@@ -103,11 +84,18 @@ export default function Sidebar({ page, setPage, isHost, setIsHost }) {
           fontFamily: 'Jura', fontWeight: 800, fontSize: 15,
           color: C.greenDark, flexShrink: 0,
         }}>
-          A
+          {initial}
         </div>
-        <div>
-          <div style={{ fontFamily: 'Jura', fontWeight: 600, fontSize: 13, color: '#fff' }}>Andi</div>
-          <div style={{ fontFamily: 'Jura', fontSize: 11, color: C.greenLight }}>Jakarta · ⭐ 4.9</div>
+        <div style={{ minWidth: 0 }}>
+          <div style={{
+            fontFamily: 'Jura', fontWeight: 600, fontSize: 13, color: '#fff',
+            overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+          }}>
+            {displayName}
+          </div>
+          <div style={{ fontFamily: 'Jura', fontSize: 10, color: C.greenLight }}>
+            {ROLE_BADGE[role] || '👤 Participant'}
+          </div>
         </div>
       </div>
     </div>
