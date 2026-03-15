@@ -17,6 +17,7 @@ const STRENGTH_COLOR = ['', C.female, C.female, '#C8A800', C.greenSage, C.greenM
 
 export default function AuthPage({ onAuth }) {
   const [mode,            setMode]            = useState('login');
+  const [name,            setName]            = useState('');
   const [email,           setEmail]           = useState('');
   const [password,        setPassword]        = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -31,11 +32,12 @@ export default function AuthPage({ onAuth }) {
 
   const canSubmit = mode === 'login'
     ? email && password
-    : email && isPassStrong && confirmPassword && passwordsMatch;
+    : name.trim() && email && isPassStrong && confirmPassword && passwordsMatch;
 
   function switchMode(m) {
     setMode(m);
     setError('');
+    setName('');
     setPassword('');
     setConfirmPassword('');
     setShowPassword(false);
@@ -48,16 +50,20 @@ export default function AuthPage({ onAuth }) {
     setLoading(true);
     try {
       const endpoint = mode === 'login' ? '/auth/login' : '/auth/register';
+      const body = mode === 'login'
+        ? { email, password }
+        : { email, password, name: name.trim() };
       const res = await fetch(`${API_URL}${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify(body),
       });
       const data = await res.json();
       if (!res.ok) {
         setError(data.message || data.error || 'Something went wrong. Please try again.');
       } else {
-        onAuth(data);
+        // Unwrap { user, token } so page.js receives the user object directly
+        onAuth({ ...data.user, token: data.token });
       }
     } catch {
       setError('Network error. Please check your connection and try again.');
@@ -163,6 +169,30 @@ export default function AuthPage({ onAuth }) {
           </div>
 
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+
+            {/* Name — signup only */}
+            {mode === 'signup' && (
+              <div>
+                <label style={{ fontFamily: 'Jura', fontSize: 12, fontWeight: 700, color: C.textMid, display: 'block', marginBottom: 6, textTransform: 'uppercase', letterSpacing: .8 }}>
+                  Full Name
+                </label>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={e => setName(e.target.value)}
+                  placeholder="Your name"
+                  required
+                  style={{
+                    width: '100%', padding: '11px 14px', borderRadius: 10,
+                    border: `1.5px solid ${C.border}`, fontFamily: 'Jura', fontSize: 14,
+                    color: C.text, background: '#fff', outline: 'none',
+                    boxSizing: 'border-box',
+                  }}
+                  onFocus={e => e.target.style.borderColor = C.greenSage}
+                  onBlur={e => e.target.style.borderColor = C.border}
+                />
+              </div>
+            )}
 
             {/* Email */}
             <div>

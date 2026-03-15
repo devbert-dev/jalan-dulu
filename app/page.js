@@ -16,7 +16,7 @@ export default function Page() {
   }
 
   // Page title map
-  const displayName = user?.name || user?.email?.split('@')[0] || 'there';
+  const displayName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'there';
   const META = {
     home:     { title: `Welcome back, ${displayName} 👋`, sub: '3 new events near you' },
     discover: { title: 'Discover',                         sub: 'Browse & join activities' },
