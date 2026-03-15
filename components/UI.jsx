@@ -8,7 +8,7 @@ export function Tag({ label, color = C.greenSage }) {
       background: color + '18', color,
       fontSize: 11, fontWeight: 600,
       padding: '2px 9px', borderRadius: 20,
-      fontFamily: 'Outfit, sans-serif', whiteSpace: 'nowrap',
+      fontFamily: 'Jura, sans-serif', whiteSpace: 'nowrap',
     }}>
       {label}
     </span>
@@ -25,7 +25,7 @@ export function PublicSlotBar({ filled, total }) {
     <div>
       <div style={{
         display: 'flex', justifyContent: 'space-between',
-        fontFamily: 'Outfit', fontSize: 12, marginBottom: 4,
+        fontFamily: 'Jura', fontSize: 12, marginBottom: 4,
       }}>
         <span style={{ color: C.textMuted }}>
           {left <= 0 ? 'Fully booked' : `${left} spot${left !== 1 ? 's' : ''} left`}
@@ -56,11 +56,11 @@ export function HostGenderBar({ female, male }) {
       <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 10 }}>
         <span style={{
           fontSize: 11, background: C.yellowPale, color: C.yellowDeep,
-          fontFamily: 'Outfit', fontWeight: 700, padding: '2px 8px', borderRadius: 20,
+          fontFamily: 'Jura', fontWeight: 700, padding: '2px 8px', borderRadius: 20,
         }}>
           🔒 Host View Only
         </span>
-        <span style={{ fontSize: 11, color: C.textMuted, fontFamily: 'Outfit' }}>
+        <span style={{ fontSize: 11, color: C.textMuted, fontFamily: 'Jura' }}>
           Gender quota breakdown
         </span>
       </div>
@@ -69,7 +69,7 @@ export function HostGenderBar({ female, male }) {
         <div key={label} style={{ marginBottom: 8 }}>
           <div style={{
             display: 'flex', justifyContent: 'space-between',
-            fontFamily: 'Outfit', fontSize: 12, marginBottom: 3,
+            fontFamily: 'Jura', fontSize: 12, marginBottom: 3,
           }}>
             <span style={{ color, fontWeight: 600 }}>{label}</span>
             <span style={{ color: C.textMuted }}>

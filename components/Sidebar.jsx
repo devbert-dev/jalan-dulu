@@ -10,13 +10,13 @@ export default function Sidebar({ page, setPage, isHost, setIsHost }) {
     }}>
       {/* Logo */}
       <div style={{ padding: '24px 22px 20px', borderBottom: '1px solid rgba(255,255,255,.08)' }}>
-        <div style={{ fontFamily: 'Playfair Display, serif', fontWeight: 800, fontSize: 24, color: '#fff', lineHeight: 1 }}>
+        <div style={{ fontFamily: 'Jura, sans-serif', fontWeight: 800, fontSize: 24, color: '#fff', lineHeight: 1 }}>
           Jalan
         </div>
-        <div style={{ fontFamily: 'Playfair Display, serif', fontWeight: 800, fontSize: 24, color: C.yellowMid, lineHeight: 1 }}>
+        <div style={{ fontFamily: 'Jura, sans-serif', fontWeight: 800, fontSize: 24, color: C.yellowMid, lineHeight: 1 }}>
           Dulu
         </div>
-        <div style={{ fontFamily: 'Outfit', fontSize: 10, color: C.greenLight, marginTop: 5, letterSpacing: 1.5, textTransform: 'uppercase' }}>
+        <div style={{ fontFamily: 'Jura', fontSize: 10, color: C.greenLight, marginTop: 5, letterSpacing: 1.5, textTransform: 'uppercase' }}>
           Activity Platform
         </div>
       </div>
@@ -30,7 +30,7 @@ export default function Sidebar({ page, setPage, isHost, setIsHost }) {
             style={{
               display: 'flex', alignItems: 'center', gap: 12,
               padding: '11px 14px', borderRadius: 10,
-              fontFamily: 'Outfit', fontWeight: page === n.id ? 700 : 500, fontSize: 14,
+              fontFamily: 'Jura', fontWeight: page === n.id ? 700 : 500, fontSize: 14,
               background: page === n.id ? C.greenMid : 'transparent',
               color:      page === n.id ? '#fff' : C.greenLight,
               border: 'none', cursor: 'pointer', textAlign: 'left', width: '100%',
@@ -63,7 +63,7 @@ export default function Sidebar({ page, setPage, isHost, setIsHost }) {
 
       {/* Host / Participant toggle (demo purposes) */}
       <div style={{ padding: '16px 14px', borderTop: '1px solid rgba(255,255,255,.08)' }}>
-        <div style={{ fontFamily: 'Outfit', fontSize: 11, color: C.greenLight, marginBottom: 8, textTransform: 'uppercase', letterSpacing: 1 }}>
+        <div style={{ fontFamily: 'Jura', fontSize: 11, color: C.greenLight, marginBottom: 8, textTransform: 'uppercase', letterSpacing: 1 }}>
           View Mode
         </div>
         <div style={{ display: 'flex', background: 'rgba(0,0,0,.25)', borderRadius: 8, padding: 3, gap: 3 }}>
@@ -73,7 +73,7 @@ export default function Sidebar({ page, setPage, isHost, setIsHost }) {
               onClick={() => setIsHost(val)}
               style={{
                 flex: 1, padding: '7px 6px', borderRadius: 6,
-                fontFamily: 'Outfit', fontWeight: 600, fontSize: 12, cursor: 'pointer', border: 'none',
+                fontFamily: 'Jura', fontWeight: 600, fontSize: 12, cursor: 'pointer', border: 'none',
                 background: isHost === val ? C.yellowPale : 'transparent',
                 color:      isHost === val ? C.greenDark : C.greenLight,
                 transition: 'all .18s',
@@ -83,7 +83,7 @@ export default function Sidebar({ page, setPage, isHost, setIsHost }) {
             </button>
           ))}
         </div>
-        <div style={{ fontFamily: 'Outfit', fontSize: 10, color: 'rgba(255,255,255,.35)', marginTop: 8, lineHeight: 1.5 }}>
+        <div style={{ fontFamily: 'Jura', fontSize: 10, color: 'rgba(255,255,255,.35)', marginTop: 8, lineHeight: 1.5 }}>
           {isHost
             ? '🔒 Gender quota details visible'
             : '👤 Gender split hidden from you'}
@@ -100,14 +100,14 @@ export default function Sidebar({ page, setPage, isHost, setIsHost }) {
           width: 34, height: 34, borderRadius: '50%',
           background: C.yellowPale,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontFamily: 'Playfair Display', fontWeight: 800, fontSize: 15,
+          fontFamily: 'Jura', fontWeight: 800, fontSize: 15,
           color: C.greenDark, flexShrink: 0,
         }}>
           A
         </div>
         <div>
-          <div style={{ fontFamily: 'Outfit', fontWeight: 600, fontSize: 13, color: '#fff' }}>Andi</div>
-          <div style={{ fontFamily: 'Outfit', fontSize: 11, color: C.greenLight }}>Jakarta · ⭐ 4.9</div>
+          <div style={{ fontFamily: 'Jura', fontWeight: 600, fontSize: 13, color: '#fff' }}>Andi</div>
+          <div style={{ fontFamily: 'Jura', fontSize: 11, color: C.greenLight }}>Jakarta · ⭐ 4.9</div>
         </div>
       </div>
     </div>

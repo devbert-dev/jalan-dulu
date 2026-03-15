@@ -37,7 +37,7 @@ export default function EventCard({ event, selected, onClick }) {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
         <span style={{ fontSize: 26 }}>{event.category.split(' ')[0]}</span>
         <span style={{
-          fontFamily: 'Outfit', fontWeight: 700, fontSize: 12,
+          fontFamily: 'Jura', fontWeight: 700, fontSize: 12,
           background: spotsLeft <= 3 ? C.yellowPale : C.greenMint,
           color:      spotsLeft <= 3 ? C.yellowDeep : C.greenSage,
           padding: '3px 10px', borderRadius: 20,
@@ -48,7 +48,7 @@ export default function EventCard({ event, selected, onClick }) {
 
       {/* Title */}
       <div style={{
-        fontFamily: 'Playfair Display, serif', fontWeight: 700,
+        fontFamily: 'Jura, sans-serif', fontWeight: 700,
         fontSize: 15, lineHeight: 1.3, marginBottom: 5,
         color: isSelected ? '#fff' : C.text,
       }}>
@@ -57,7 +57,7 @@ export default function EventCard({ event, selected, onClick }) {
 
       {/* Meta */}
       <div style={{
-        fontFamily: 'Outfit', fontSize: 12, marginBottom: 10, lineHeight: 1.6,
+        fontFamily: 'Jura', fontSize: 12, marginBottom: 10, lineHeight: 1.6,
         color: isSelected ? C.greenPale : C.textMuted,
       }}>
         📅 {event.date}<br />📍 {event.location}
@@ -73,7 +73,7 @@ export default function EventCard({ event, selected, onClick }) {
             <span key={t} style={{
               background: isSelected ? 'rgba(255,255,255,0.12)' : C.greenMint,
               color:      isSelected ? C.greenPale : C.greenSage,
-              fontSize: 10, fontFamily: 'Outfit', fontWeight: 600,
+              fontSize: 10, fontFamily: 'Jura', fontWeight: 600,
               padding: '2px 8px', borderRadius: 10,
             }}>
               {t}
@@ -81,7 +81,7 @@ export default function EventCard({ event, selected, onClick }) {
           ))}
         </div>
         <span style={{
-          fontFamily: 'Playfair Display, serif', fontWeight: 700, fontSize: 16,
+          fontFamily: 'Jura, sans-serif', fontWeight: 700, fontSize: 16,
           color: isSelected ? C.yellowMid : C.yellowDeep,
         }}>
           Rp {event.price.toLocaleString('id-ID')}

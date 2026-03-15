@@ -19,7 +19,7 @@ export default function Page() {
   return (
     <div style={{
       display: 'grid', gridTemplateColumns: '220px 1fr',
-      height: '100vh', fontFamily: 'Outfit, sans-serif',
+      height: '100vh', fontFamily: 'Jura, sans-serif',
       background: C.bgPage, overflow: 'hidden',
     }}>
 
@@ -36,10 +36,10 @@ export default function Page() {
           display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0,
         }}>
           <div>
-            <span style={{ fontFamily: 'Playfair Display, serif', fontWeight: 800, fontSize: 20, color: C.text }}>
+            <span style={{ fontFamily: 'Jura, sans-serif', fontWeight: 800, fontSize: 20, color: C.text }}>
               {meta.title}
             </span>
-            <span style={{ fontFamily: 'Outfit', fontSize: 13, color: C.textMuted, marginLeft: 14 }}>
+            <span style={{ fontFamily: 'Jura', fontSize: 13, color: C.textMuted, marginLeft: 14 }}>
               {meta.sub}
             </span>
           </div>
@@ -47,7 +47,7 @@ export default function Page() {
             <button style={{
               padding: '8px 18px', borderRadius: 8,
               background: C.greenDark, color: '#fff',
-              fontFamily: 'Outfit', fontWeight: 600, fontSize: 13,
+              fontFamily: 'Jura', fontWeight: 600, fontSize: 13,
               border: 'none', cursor: 'pointer',
             }}>
               + Host Event
