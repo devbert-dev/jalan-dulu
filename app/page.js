@@ -4,15 +4,22 @@ import { C, NAV } from '../lib/constants';
 import Sidebar from '../components/Sidebar';
 import HomeSection from '../components/HomeSection';
 import DiscoverSection from '../components/DiscoverSection';
+import AuthPage from '../components/AuthPage';
 
 export default function Page() {
+  const [user,   setUser]   = useState(null);
   const [page,   setPage]   = useState('home');
   const [isHost, setIsHost] = useState(false);
 
+  if (!user) {
+    return <AuthPage onAuth={setUser} />;
+  }
+
   // Page title map
+  const displayName = user?.name || user?.email?.split('@')[0] || 'there';
   const META = {
-    home:     { title: 'Welcome back, Andi 👋', sub: '3 new events near you' },
-    discover: { title: 'Discover',              sub: 'Browse & join activities' },
+    home:     { title: `Welcome back, ${displayName} 👋`, sub: '3 new events near you' },
+    discover: { title: 'Discover',                         sub: 'Browse & join activities' },
   };
   const meta = META[page] || META.home;
 
@@ -60,6 +67,17 @@ export default function Page() {
             }}>
               🔔
             </div>
+            <button
+              onClick={() => setUser(null)}
+              style={{
+                padding: '8px 14px', borderRadius: 8,
+                background: 'transparent', color: C.textMuted,
+                fontFamily: 'Jura', fontWeight: 600, fontSize: 12,
+                border: `1.5px solid ${C.border}`, cursor: 'pointer',
+              }}
+            >
+              Log Out
+            </button>
           </div>
         </div>
 

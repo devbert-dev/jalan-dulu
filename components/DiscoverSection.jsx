@@ -42,7 +42,7 @@ export default function DiscoverSection({ isHost }) {
             placeholder="🔍  Search events, locations, hosts..."
             style={{
               width: '100%', padding: '10px 16px', borderRadius: 10,
-              border: `1.5px solid ${C.border}`, fontFamily: 'Outfit', fontSize: 14,
+              border: `1.5px solid ${C.border}`, fontFamily: 'Jura', fontSize: 14,
               color: C.text, background: C.bgCard, outline: 'none', marginBottom: 12,
             }}
           />
@@ -53,7 +53,7 @@ export default function DiscoverSection({ isHost }) {
                 onClick={() => setCat(c)}
                 style={{
                   padding: '5px 14px', borderRadius: 99,
-                  fontFamily: 'Outfit', fontWeight: 600, fontSize: 12,
+                  fontFamily: 'Jura', fontWeight: 600, fontSize: 12,
                   whiteSpace: 'nowrap', cursor: 'pointer', transition: 'all .18s',
                   background: cat === c ? C.greenDark : C.bgCard,
                   color:      cat === c ? '#fff' : C.textMuted,
@@ -69,12 +69,12 @@ export default function DiscoverSection({ isHost }) {
         {/* Cards */}
         <div style={{ overflowY: 'auto', padding: '16px 24px', display: 'flex', flexDirection: 'column', gap: 12 }}>
           {loading ? (
-            <div style={{ padding: 40, textAlign: 'center', color: C.textMuted, fontFamily: 'Outfit' }}>
+            <div style={{ padding: 40, textAlign: 'center', color: C.textMuted, fontFamily: 'Jura' }}>
               Loading events…
             </div>
           ) : (
             <>
-              <div style={{ fontFamily: 'Outfit', fontSize: 12, color: C.textMuted, marginBottom: 4 }}>
+              <div style={{ fontFamily: 'Jura', fontSize: 12, color: C.textMuted, marginBottom: 4 }}>
                 {filtered.length} event{filtered.length !== 1 ? 's' : ''} found
               </div>
               {filtered.length ? filtered.map(e => (
@@ -85,7 +85,7 @@ export default function DiscoverSection({ isHost }) {
                   onClick={() => setSelected(e)}
                 />
               )) : (
-                <div style={{ padding: 40, textAlign: 'center', color: C.textMuted, fontFamily: 'Outfit' }}>
+                <div style={{ padding: 40, textAlign: 'center', color: C.textMuted, fontFamily: 'Jura' }}>
                   No events match your search 🌿<br />Try a different filter.
                 </div>
               )}
