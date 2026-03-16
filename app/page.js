@@ -5,20 +5,22 @@ import Sidebar from '../components/Sidebar';
 import HomeSection from '../components/HomeSection';
 import DiscoverSection from '../components/DiscoverSection';
 import AdminPanel from '../components/AdminPanel';
+import MyEventsSection from '../components/MyEventsSection';
+import CreateEventForm from '../components/CreateEventForm';
 import AuthPage from '../components/AuthPage';
 
 export default function Page() {
-  const [user, setUser] = useState(null);
-  const [page, setPage] = useState('home');
+  const [user,            setUser]            = useState(null);
+  const [page,            setPage]            = useState('home');
+  const [showCreateForm,  setShowCreateForm]  = useState(false);
 
   if (!user) {
     return <AuthPage onAuth={setUser} />;
   }
 
-  const role = user?.user_metadata?.role ?? 'user';
+  const role  = user?.user_metadata?.role ?? 'user';
   const token = user?.token;
 
-  // Page title map
   const displayName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'there';
   const META = {
     home:     { title: `Welcome back, ${displayName} 👋`, sub: '3 new events near you' },
@@ -27,6 +29,11 @@ export default function Page() {
     admin:    { title: 'Admin Panel',                      sub: 'Manage users and roles' },
   };
   const meta = META[page] || META.home;
+
+  function handleCreateSuccess(newEvent) {
+    setShowCreateForm(false);
+    setPage('myevents');
+  }
 
   return (
     <div style={{
@@ -58,7 +65,7 @@ export default function Page() {
           <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
             {(role === 'host' || role === 'admin') && (
               <button
-                onClick={() => setPage('myevents')}
+                onClick={() => setShowCreateForm(true)}
                 style={{
                   padding: '8px 18px', borderRadius: 8,
                   background: C.greenDark, color: '#fff',
@@ -97,12 +104,22 @@ export default function Page() {
           {page === 'discover' && <DiscoverSection role={role} token={token} />}
           {page === 'admin'    && <AdminPanel token={token} />}
           {page === 'myevents' && (
-            <div style={{ padding: '40px 36px', fontFamily: 'Jura', color: C.textMuted, fontSize: 14 }}>
-              My Events — coming soon.
-            </div>
+            <MyEventsSection
+              token={token}
+              onCreateEvent={() => setShowCreateForm(true)}
+            />
           )}
         </div>
       </div>
+
+      {/* Create Event modal — rendered at root so it overlays everything */}
+      {showCreateForm && (
+        <CreateEventForm
+          token={token}
+          onClose={() => setShowCreateForm(false)}
+          onSuccess={handleCreateSuccess}
+        />
+      )}
     </div>
   );
 }
