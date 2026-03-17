@@ -17,9 +17,31 @@ function StatPill({ label, value, color }) {
 }
 
 export default function MyEventsSection({ token, onCreateEvent }) {
-  const [events,  setEvents]  = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error,   setError]   = useState('');
+  const [events,   setEvents]   = useState([]);
+  const [loading,  setLoading]  = useState(true);
+  const [error,    setError]    = useState('');
+  const [deleting, setDeleting] = useState(null); // event id being deleted
+
+  async function handleDelete(id) {
+    if (!window.confirm('Delete this event? This cannot be undone.')) return;
+    setDeleting(id);
+    try {
+      const res = await fetch(`${API_URL}/events/${id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || 'Failed to delete event.');
+      } else {
+        setEvents(prev => prev.filter(e => e.id !== id));
+      }
+    } catch {
+      setError('Network error. Please try again.');
+    } finally {
+      setDeleting(null);
+    }
+  }
 
   function load() {
     setLoading(true);
@@ -246,14 +268,20 @@ export default function MyEventsSection({ token, onCreateEvent }) {
               }}>
                 📊 View Bookings
               </button>
-              <button style={{
-                marginLeft: 'auto',
-                padding: '8px 16px', borderRadius: 8,
-                border: `1.5px solid ${C.female}55`,
-                fontFamily: 'Jura', fontWeight: 600, fontSize: 12,
-                background: 'transparent', color: C.female, cursor: 'pointer',
-              }}>
-                🗑 Delete
+              <button
+                onClick={() => handleDelete(e.id)}
+                disabled={deleting === e.id}
+                style={{
+                  marginLeft: 'auto',
+                  padding: '8px 16px', borderRadius: 8,
+                  border: `1.5px solid ${C.female}55`,
+                  fontFamily: 'Jura', fontWeight: 600, fontSize: 12,
+                  background: 'transparent', color: C.female,
+                  cursor: deleting === e.id ? 'not-allowed' : 'pointer',
+                  opacity: deleting === e.id ? 0.5 : 1,
+                }}
+              >
+                {deleting === e.id ? 'Deleting…' : '🗑 Delete'}
               </button>
             </div>
           </div>
